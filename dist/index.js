@@ -111,16 +111,16 @@ function findReleaseFile(releaseDir) {
 }
 function run() {
     var e_1, _a, e_2, _b;
-    var _c;
+    var _c, _d, _e;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const buildDir = (_c = core.getInput('buildDirectory')) !== null && _c !== void 0 ? _c : "build";
+            const buildDir = (_c = core.getInput('buildDirectory')) !== null && _c !== void 0 ? _c : 'build';
+            const output = (_d = core.getInput('output')) !== null && _d !== void 0 ? _d : path_1.default.join('build', 'signed');
             const releaseDirs = core.getInput('releaseDirectory').split('\n').filter(it => it !== '');
             const signingKeyBase64 = core.getInput('signingKeyBase64');
             const alias = core.getInput('alias');
             const keyStorePassword = core.getInput('keyStorePassword');
             const keyPassword = core.getInput('keyPassword');
-            console.log(`Preparing signing key`);
             const signingKey = path_1.default.join(buildDir, 'signingKey.jks');
             fs_1.default.writeFileSync(signingKey, signingKeyBase64, 'base64');
             try {
@@ -131,7 +131,6 @@ function run() {
                         for (var releaseFiles_1 = (e_2 = void 0, __asyncValues(releaseFiles)), releaseFiles_1_1; releaseFiles_1_1 = yield releaseFiles_1.next(), !releaseFiles_1_1.done;) {
                             const releaseFile = releaseFiles_1_1.value;
                             if (releaseFile !== undefined) {
-                                core.debug(`Found release to sign: ${releaseFile.name}`);
                                 const releaseFilePath = path_1.default.join(releaseDir, releaseFile.name);
                                 let signedReleaseFile = '';
                                 if (releaseFile.name.endsWith('.apk')) {
@@ -144,10 +143,7 @@ function run() {
                                     core.error('No valid release file to sign, abort.');
                                     core.setFailed('No valid release file to sign.');
                                 }
-                                console.log('Release signed!');
-                                core.debug('Release signed! Setting outputs');
-                                core.exportVariable("SIGNED_RELEASE_FILE", signedReleaseFile);
-                                core.setOutput('signedReleaseFile', signedReleaseFile);
+                                fs_1.default.copyFileSync(signedReleaseFile, path_1.default.join(output, (_e = signedReleaseFile.split(/(\\|\/)/g).pop()) !== null && _e !== void 0 ? _e : releaseFile.name));
                             }
                             else {
                                 core.error("No release file (.apk or .aab) could be found. Abort.");
@@ -1503,6 +1499,10 @@ function signApkFile(apkFile, signingKeyFile, alias, keyStorePassword, keyPasswo
         // Find zipalign executable
         const buildToolsVersion = process.env.BUILD_TOOLS_VERSION || '30.0.2';
         const androidHome = process.env.ANDROID_HOME;
+        if (!androidHome) {
+            core.error("require ANDROID_HOME to be execute");
+            throw new Error("ANDROID_HOME is null");
+        }
         const buildTools = path.join(androidHome, `build-tools/${buildToolsVersion}`);
         if (!fs.existsSync(buildTools)) {
             core.error(`Couldnt find the Android build tools @ ${buildTools}`);
@@ -1560,9 +1560,10 @@ function signAabFile(aabFile, signingKeyFile, alias, keyStorePassword, keyPasswo
         if (keyPassword) {
             args.push('-keypass', keyPassword);
         }
-        args.push(aabFile, alias);
+        const signedApkFile = aabFile.replace('.aab', '-signed.aab');
+        args.push(signedApkFile, alias);
         yield exec.exec(`"${jarSignerPath}"`, args);
-        return aabFile;
+        return signedApkFile;
     });
 }
 exports.signAabFile = signAabFile;
