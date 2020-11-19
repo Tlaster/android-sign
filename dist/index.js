@@ -1557,6 +1557,9 @@ function signAabFile(aabFile, signingKeyFile, alias, keyStorePassword, keyPasswo
         const jarSignerPath = yield io.which('jarsigner', true);
         core.debug(`Found 'jarsigner' @ ${jarSignerPath}`);
         const args = [
+            '-verbose',
+            '-sigalg', 'SHA256withRSA',
+            '-digestalg', 'SHA-256',
             '-keystore', signingKeyFile,
             '-storepass', keyStorePassword,
         ];

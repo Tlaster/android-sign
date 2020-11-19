@@ -36,7 +36,7 @@ export async function signApkFile(
         '-v', '4',
         apkFile
     ]);
-    
+
     await exec.exec(`"cp"`, [
         apkFile,
         alignedApkFile
@@ -86,6 +86,9 @@ export async function signAabFile(
     const jarSignerPath = await io.which('jarsigner', true);
     core.debug(`Found 'jarsigner' @ ${jarSignerPath}`);
     const args = [
+        '-verbose',
+        '-sigalg', 'SHA256withRSA',
+        '-digestalg', 'SHA-256',
         '-keystore', signingKeyFile,
         '-storepass', keyStorePassword,
     ];
