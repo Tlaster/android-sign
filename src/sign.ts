@@ -17,7 +17,11 @@ export async function signApkFile(
     // Find zipalign executable
     const buildToolsVersion = process.env.BUILD_TOOLS_VERSION || '30.0.2';
     const androidHome = process.env.ANDROID_HOME;
-    const buildTools = path.join(androidHome!, `build-tools/${buildToolsVersion}`);
+    if (!androidHome) {
+        core.error("require ANDROID_HOME to be execute");
+        throw "ANDROID_HOME is null";
+    }
+    const buildTools = path.join(androidHome, `build-tools/${buildToolsVersion}`);
     if (!fs.existsSync(buildTools)) {
         core.error(`Couldnt find the Android build tools @ ${buildTools}`)
     }

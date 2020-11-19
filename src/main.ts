@@ -17,16 +17,12 @@ async function run(): Promise<void> {
     const alias = core.getInput('alias');
     const keyStorePassword = core.getInput('keyStorePassword');
     const keyPassword = core.getInput('keyPassword');
-
-    console.log(`Preparing signing key`);
     const signingKey = path.join(buildDir, 'signingKey.jks');
     fs.writeFileSync(signingKey, signingKeyBase64, 'base64');
-
     for await (const releaseDir of releaseDirs) {
       const releaseFiles = findReleaseFile(releaseDir);
       for await (const releaseFile of releaseFiles) {
         if (releaseFile !== undefined) {
-          core.debug(`Found release to sign: ${releaseFile.name}`);
           const releaseFilePath = path.join(releaseDir, releaseFile.name);
           let signedReleaseFile = '';
           if (releaseFile.name.endsWith('.apk')) {
@@ -37,10 +33,6 @@ async function run(): Promise<void> {
             core.error('No valid release file to sign, abort.');
             core.setFailed('No valid release file to sign.');
           }
-
-          console.log('Release signed!');
-          core.debug('Release signed! Setting outputs');
-
           core.exportVariable("SIGNED_RELEASE_FILE", signedReleaseFile);
           core.setOutput('signedReleaseFile', signedReleaseFile);
         } else {
