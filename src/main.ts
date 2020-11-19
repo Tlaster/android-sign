@@ -11,7 +11,8 @@ function findReleaseFile(releaseDir: string): Dirent[] {
 
 async function run(): Promise<void> {
   try {
-    const buildDir = core.getInput('buildDirectory') ?? "build";
+    const buildDir = core.getInput('buildDirectory') ?? 'build';
+    const output = core.getInput('output') ?? path.join('build', 'signed');
     const releaseDirs = core.getInput('releaseDirectory').split('\n').filter(it => it !== '');
     const signingKeyBase64 = core.getInput('signingKeyBase64');
     const alias = core.getInput('alias');
@@ -33,8 +34,7 @@ async function run(): Promise<void> {
             core.error('No valid release file to sign, abort.');
             core.setFailed('No valid release file to sign.');
           }
-          core.exportVariable("SIGNED_RELEASE_FILE", signedReleaseFile);
-          core.setOutput('signedReleaseFile', signedReleaseFile);
+          fs.copyFileSync(signedReleaseFile, path.join(output, signedReleaseFile.split(/(\\|\/)/g).pop() ?? releaseFile.name))
         } else {
           core.error("No release file (.apk or .aab) could be found. Abort.");
           core.setFailed('No release file (.apk or .aab) could be found.');

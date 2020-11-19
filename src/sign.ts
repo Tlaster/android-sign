@@ -94,9 +94,11 @@ export async function signAabFile(
         args.push('-keypass', keyPassword);
     }
 
-    args.push(aabFile, alias);
+    const signedApkFile = aabFile.replace('.aab', '-signed.aab');
+
+    args.push(signedApkFile, alias);
 
     await exec.exec(`"${jarSignerPath}"`, args);
 
-    return aabFile
+    return signedApkFile
 }
