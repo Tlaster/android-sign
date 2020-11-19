@@ -13,7 +13,7 @@ async function run(): Promise<void> {
   try {
     const buildDir = core.getInput('buildDirectory') ?? 'build';
     const output = core.getInput('output') ?? path.join('build', 'signed');
-    
+
     const releaseDirs = core.getInput('releaseDirectory').split('\n').filter(it => it !== '');
     const signingKeyBase64 = core.getInput('signingKeyBase64');
     const alias = core.getInput('alias');
@@ -22,7 +22,7 @@ async function run(): Promise<void> {
     const signingKey = path.join(buildDir, 'signingKey.jks');
     fs.writeFileSync(signingKey, signingKeyBase64, 'base64');
     if (!fs.existsSync(output)) {
-      fs.mkdirSync(output);
+      fs.mkdirSync(output, { recursive: true });
     }
     for await (const releaseDir of releaseDirs) {
       const releaseFiles = findReleaseFile(releaseDir);
