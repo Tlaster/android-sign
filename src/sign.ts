@@ -19,7 +19,7 @@ export async function signApkFile(
     const androidHome = process.env.ANDROID_HOME;
     if (!androidHome) {
         core.error("require ANDROID_HOME to be execute");
-        throw "ANDROID_HOME is null";
+        throw new Error("ANDROID_HOME is null");
     }
     const buildTools = path.join(androidHome, `build-tools/${buildToolsVersion}`);
     if (!fs.existsSync(buildTools)) {
