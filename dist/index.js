@@ -123,6 +123,9 @@ function run() {
             const keyPassword = core.getInput('keyPassword');
             const signingKey = path_1.default.join(buildDir, 'signingKey.jks');
             fs_1.default.writeFileSync(signingKey, signingKeyBase64, 'base64');
+            if (!fs_1.default.existsSync(output)) {
+                fs_1.default.mkdirSync(output);
+            }
             try {
                 for (var releaseDirs_1 = __asyncValues(releaseDirs), releaseDirs_1_1; releaseDirs_1_1 = yield releaseDirs_1.next(), !releaseDirs_1_1.done;) {
                     const releaseDir = releaseDirs_1_1.value;
