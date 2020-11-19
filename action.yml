@@ -1,11 +1,28 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Sign Android release'
+description: 'An action to sign an Android release APK or AAB'
+author: 'Tlaster'
 inputs:
-  milliseconds: # change this
+  releaseDirectory:
+    description: 'The directory to find your release to sign'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  signingKeyBase64:
+    description: 'The key used to sign your release in base64 encoded format'
+    required: true
+  alias:
+    description: 'The key alias'
+    required: true
+  keyStorePassword:
+    description: 'The password to the keystore'
+    required: true
+  keyPassword:
+    description: 'The password for the key'
+    required: false
+  buildDirectory:
+    description: 'The working directory for action, default to build'
+    required: false
+  output:
+    description: 'The output directory for sign, default to build/signed'
+    required: false
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'lib/main.js'
