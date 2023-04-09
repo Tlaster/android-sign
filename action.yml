@@ -1,5 +1,8 @@
-name: 'Android Sign'
+name: 'Android Sign 2'
 description: 'An action to sign an Android release APK or AAB'
+branding:
+  icon: 'award'
+  color: 'green'
 author: 'Tlaster'
 inputs:
   releaseDirectory:
