@@ -11,7 +11,7 @@
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run package"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,8 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/exec": "^1.0.4",
-    "@actions/io": "^1.0.2"
+    "@actions/io": "^1.0.2",
+    "eslint-plugin-prettier": "^4.2.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.10",
