@@ -211,17 +211,13 @@ function signApkFile(apkFile, signingKeyFile, alias, keyStorePassword, keyPasswo
         const signedApkFile = apkFile.replace('.apk', '-signed.apk');
         const args = [
             'sign',
-            '--ks',
-            signingKeyFile,
-            '--ks-key-alias',
-            alias,
-            '--ks-pass',
-            `pass:${keyStorePassword}`,
-            '--out',
-            signedApkFile
+            '--ks', `"${signingKeyFile}"`,
+            '--ks-key-alias', `"${alias}"`,
+            '--ks-pass', `pass:"${keyStorePassword}"`,
+            '--out', `"${signedApkFile}"`
         ];
         if (keyPassword) {
-            args.push('--key-pass', `pass:${keyPassword}`);
+            args.push('--key-pass', `pass:"${keyPassword}"`);
         }
         args.push(alignedApkFile);
         yield exec.exec(`"${apkSigner}"`, args);

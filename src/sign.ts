@@ -45,17 +45,17 @@ export async function signApkFile(
   const args = [
     'sign',
     '--ks',
-    signingKeyFile,
+    `"${signingKeyFile}"`,
     '--ks-key-alias',
-    alias,
+    `"${alias}"`,
     '--ks-pass',
-    `pass:${keyStorePassword}`,
+    `pass:"${keyStorePassword}"`,
     '--out',
-    signedApkFile
+    `"${signedApkFile}"`
   ]
 
   if (keyPassword) {
-    args.push('--key-pass', `pass:${keyPassword}`)
+    args.push('--key-pass', `pass:"${keyPassword}"`)
   }
   args.push(alignedApkFile)
 
