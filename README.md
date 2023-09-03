@@ -50,7 +50,7 @@ Then copy the contents of the `.txt` file to your GH secrets
 steps:
   # ...
 
-  - uses: Tlaster/android-sign@v1
+  - uses: MatiasG19/android-sign@2.0.0
     name: Sign app APK
     with:
       releaseDirectory: |
