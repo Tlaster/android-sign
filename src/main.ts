@@ -67,6 +67,7 @@ async function run(): Promise<void> {
         }
       }
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     core.setFailed(error.message)
   }
