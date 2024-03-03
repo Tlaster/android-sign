@@ -27,5 +27,5 @@ inputs:
     description: 'The output directory for sign, default to build/signed'
     required: false
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
