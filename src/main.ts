@@ -32,6 +32,7 @@ async function run(): Promise<void> {
       const releaseFiles = findReleaseFile(releaseDir)
       for await (const releaseFile of releaseFiles) {
         if (releaseFile !== undefined) {
+          core.debug(`${releaseFile}`)
           const releaseFilePath = path.join(releaseDir, releaseFile.name)
           let signedReleaseFile = ''
           if (releaseFile.name.endsWith('.apk')) {
