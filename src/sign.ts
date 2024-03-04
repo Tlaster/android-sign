@@ -79,6 +79,8 @@ export async function signAabFile(
   const jarSignerPath = await io.which('jarsigner', true)
   core.debug(`Found 'jarsigner' @ ${jarSignerPath}`)
 
+  exec.exec('ls')
+
   // jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore myKeyStore.jks
   // -storepass myStorePassword -keypass myKeyPassword myUnsignedAAB.aab alias
   const args = [
