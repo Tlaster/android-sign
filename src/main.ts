@@ -31,41 +31,41 @@ async function run(): Promise<void> {
     for await (const releaseDir of releaseDirs) {
       const releaseFiles = findReleaseFile(releaseDir)
       for await (const releaseFile of releaseFiles) {
-        if (releaseFile !== undefined) {
-          core.debug(`${releaseFile}`)
-          const releaseFilePath = path.join(releaseDir, releaseFile.name)
-          let signedReleaseFile = ''
-          if (releaseFile.name.endsWith('.apk')) {
-            signedReleaseFile = await signApkFile(
-              releaseFilePath,
-              signingKey,
-              alias,
-              keyStorePassword,
-              keyPassword
-            )
-          } else if (releaseFile.name.endsWith('.aab')) {
-            signedReleaseFile = await signAabFile(
-              releaseFilePath,
-              signingKey,
-              alias,
-              keyStorePassword,
-              keyPassword
-            )
-          } else {
-            core.error('No valid release file to sign, abort.')
-            core.setFailed('No valid release file to sign.')
-          }
-          fs.copyFileSync(
-            signedReleaseFile,
-            path.join(
-              output,
-              signedReleaseFile.split(/(\\|\/)/g).pop() ?? releaseFile.name
-            )
-          )
-        } else {
+        if (releaseFile === undefined) {
           core.error('No release file (.apk or .aab) could be found. Abort.')
           core.setFailed('No release file (.apk or .aab) could be found.')
         }
+
+        core.debug(`File found: ${releaseFile}`)
+        const releaseFilePath = path.join(releaseDir, releaseFile.name)
+        let signedReleaseFile = ''
+        if (releaseFile.name.endsWith('.apk')) {
+          signedReleaseFile = await signApkFile(
+            releaseFilePath,
+            signingKey,
+            alias,
+            keyStorePassword,
+            keyPassword
+          )
+        } else if (releaseFile.name.endsWith('.aab')) {
+          signedReleaseFile = await signAabFile(
+            releaseFilePath,
+            signingKey,
+            alias,
+            keyStorePassword,
+            keyPassword
+          )
+        } else {
+          core.error('No valid release file to sign, abort.')
+          core.setFailed('No valid release file to sign.')
+        }
+        fs.copyFileSync(
+          signedReleaseFile,
+          path.join(
+            output,
+            signedReleaseFile.split(/(\\|\/)/g).pop() ?? releaseFile.name
+          )
+        )
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
