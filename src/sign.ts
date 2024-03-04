@@ -34,7 +34,7 @@ export async function signApkFile(
 
   await exec.exec(`"cp"`, [apkFile, alignedApkFile])
 
-  core.debug('Signing APK file')
+  core.debug('Signing APK')
 
   // find apksigner path
   const apkSigner = path.join(buildTools, 'apksigner')
@@ -62,7 +62,7 @@ export async function signApkFile(
   await exec.exec(`"${apkSigner}"`, args)
 
   // Verify
-  core.debug('Verifying Signed APK')
+  core.debug('Verifying signed APK')
   await exec.exec(`"${apkSigner}"`, ['verify', signedApkFile])
 
   return signedApkFile
@@ -75,12 +75,12 @@ export async function signAabFile(
   keyStorePassword: string,
   keyPassword?: string
 ): Promise<string> {
-  core.debug('Signing AAB file')
+  core.debug('Signing AAB')
   const jarSignerPath = await io.which('jarsigner', true)
   core.debug(`Found 'jarsigner' @ ${jarSignerPath}`)
 
   // jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore myKeyStore.jks
-  // -storepass myStorePassowrd -keypass myKeyPassword -signedjar mySignedAAB.aab myUnsignedAAB.aab alias
+  // -storepass myStorePassword -keypass myKeyPassword myUnsignedAAB.aab alias
   const args = [
     '-verbose',
     '-sigalg',
@@ -97,15 +97,17 @@ export async function signAabFile(
     args.push('-keypass', keyPassword)
   }
 
-  const signedFile = aabFile.replace('.aab', '-signed.aab')
-
-  args.push('-signedjar', signedFile, aabFile, alias)
+  args.push(aabFile, alias)
 
   await exec.exec(`"${jarSignerPath}"`, args)
 
   // Verify
-  // core.debug('Verifying Signed APK')
-  // await exec.exec(`"${jarSignerPath}"`, ['verify', signedFile])
+  core.debug('Verifying signed AAB')
+  await exec.exec(`"${jarSignerPath}"`, ['verify', aabFile])
+
+  // Rename
+  const signedFile = aabFile.replace('.aab', '-signed.aab')
+  await exec.exec(`mv ${aabFile} ${signedFile}`)
 
   return signedFile
 }
